@@ -32,7 +32,7 @@ class App extends Component {
         </header>
 
         <p className="App-intro">
-          <h2>Choose an example</h2>
+          <h2>Seleccione uno</h2>
         </p>
 
         <div className='content'>
