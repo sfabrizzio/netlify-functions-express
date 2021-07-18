@@ -35,6 +35,32 @@ const Html = ({ body, styles, title }) => {
 }
 const routerBasePath = (process.env.NODE_ENV === 'dev') ? `/${functionName}` : `/.netlify/functions/${functionName}/`
 
+var app = Express();
+
+app.use(BodyParser.json());
+app.use(BodyParser.urlencoded({ extended: true }));
+
+var database, collection;
+
+app.listen(3000, () => {
+    MongoClient.connect(CONNECTION_URL, { useNewUrlParser: true }, (error, client) => {
+        if(error) {
+            throw error;
+        }
+        database = client.db(DATABASE_NAME);
+        collection = database.collection("notas:prensa");
+        console.log("Connected to `" + DATABASE_NAME + "`!");
+    });
+});
+
+app.get("/people", (request, response) => {
+  collection.find({}).toArray((error, result) => {
+      if(error) {
+          return response.status(500).send(error);
+      }
+      response.send(result);
+  });
+});
 app.get(routerBasePath, (req, res) => {
   Data().then(users => {
     const reactAppHtml = renderToString(<App data={users} />)
